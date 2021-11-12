@@ -21,15 +21,13 @@ if __name__ == '__main__':
             print(myzip)
             myzip.extractall(savePath)
 
-    fileName = filePath.split("\\")[-1]
-    print(fileName)
-    name = re.split(r'.[gz]|[zip]]', fileName)[0]
-    print(name)
     print(savePath)
 
-    # print([x for x in os.walk(savePath)])
     print("start")
     for root, dirs, files in os.walk(savePath, topdown=False):
+
+        uniqNumbers = set()
+        uniqEmails = set()
 
         print("root", root)
         print("dirs", dirs)
@@ -44,13 +42,12 @@ if __name__ == '__main__':
                         uniq.add(row.strip())
 
                 print(uniq)
-                uniqNumbers = set()
-                uniqEmails = set()
                 for e in uniq:
                     numberString = str()
                     for s in re.split(r'[ ,:;\t]', e):  # e.split(' '):  # #e.split(' '):
                         if "@" in s:
-                            uniqEmails.add(s)
+                            if '.org' in s:
+                                uniqEmails.add(s)
                         elif len(s.strip()) > 0:
                             if s[0] == "(":
                                 ss = [x for x in s]
