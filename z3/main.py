@@ -21,8 +21,6 @@ def unZipAll(path):
     for root, dirs, files in os.walk(path, topdown=False):
         zips = [file for file in files if ".zip" in file]
         for zip in zips:
-            # with zipfile.ZipFile(root.replace("\\", "/") + "/" + zip, 'r') as curZip:
-            #     curZip.extractall(root.replace("\\", "/") + "/" + id_generator())
             unZip(root, zip)
             os.remove(root.replace("\\", "/") + "/" + zip)
 
@@ -33,7 +31,6 @@ def unZipAll(path):
                 file_content = f.read()
                 with open(root.replace("\\", "/") + "/" + gz + ".txt", 'w', encoding='utf-8') as newTxt:
                     newTxt.write(file_content.decode('utf-8'))
-                print("---------------------")
             os.remove(root.replace("\\", "/") + "/" + gz)
 
 
@@ -49,22 +46,16 @@ if __name__ == '__main__':
         with zipfile.ZipFile(filePath, 'r') as myzip:
             myzip.extractall(savePath)
 
-    # print(savePath)
-    #
-    # print("start")
-
     unZipAll(savePath)
-    print("UNZIPPED_--------------------------------")
-    zipA = zipfile.ZipFile("./all.zip", "w")
 
     uniqNumbers = set()
     uniqEmails = set()
 
     for root, dirs, files in os.walk(savePath, topdown=False):
-
-        print("root", root)
-        print('files', files)
-
+        #
+        # print("root", root)
+        # print('files', files)
+        #
         txts = [file for file in files if ".txt" in file]
         if len(txts) > 0:
             for txt in txts:
@@ -73,7 +64,7 @@ if __name__ == '__main__':
                     for row in f:
                         uniq.add(row.strip())
 
-                print(uniq)
+                # print(uniq, " - 67")
                 for e in uniq:
                     numberString = str()
                     for s in re.split(r'[ ,:;\t]+', e):  # e.split(' '):  # #e.split(' '):
@@ -82,26 +73,36 @@ if __name__ == '__main__':
                                 uniqEmails.add(s)
                         elif len(s.strip()) > 0:
 
-                            if s[0] == "(":
+                            op = s.find("(")
+                            if op == 0 and len(s) == 5:  # s[0] == "(":
+                                # print(op)
                                 ss = [x for x in s]
-                                if ss[1] == '1':
-                                    ss[1] = 4
-                                elif ss[1] == '2':
-                                    ss[1] = 8
-                                else:
-                                    ss[2] = 2
+                                if ss[op + 1] == '1':
+                                    ss[op + 1] = 4
+                                elif ss[op + 1] == '2':
+                                    ss[op + 1] = 8
+                                elif ss[op + 1] == '3':
+                                    ss[op + 2] = 2
                                 s = ''.join(str(sss) for sss in ss)
+                            elif op > 0 and s[op + 4]:
+                                # print(s[op + 3], '3')
+                                # print(s[op + 4], '4')
+                                pass
+
                             numberString += s.replace("(", ' (').replace(")", ") ").replace("-", '')
                     uniqNumbers.add(numberString)
                 f = open("./phones.txt", 'w', encoding='utf-8')
-                for uN in uniqNumbers:
+                for uN in sorted(uniqNumbers):
                     f.write(uN + "\n")
                 f.close()
                 f = open("./emails.txt", 'w', encoding='utf-8')
-                for uE in uniqEmails:
+                for uE in sorted(uniqEmails):
                     f.write(uE + "\n")
                 f.close()
                 pass
+
+    zipA = zipfile.ZipFile("./all.zip", "w")
+    for root, dirs, files in os.walk(savePath, topdown=False):
 
         for filename in files:
             filePath = os.path.join(root, filename)
@@ -110,4 +111,4 @@ if __name__ == '__main__':
     zipA.write("phones.txt")
     zipA.write("emails.txt")
 
-    # shutil.rmtree(savePath)
+    shutil.rmtree(savePath)
