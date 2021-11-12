@@ -36,14 +36,10 @@ def unZipAll(path):
 
 if __name__ == '__main__':
     params = sys.argv
-    filePath = params[1]
     savePath = "./tmp/"
-    if len(params) > 2:
-        with zipfile.ZipFile(filePath, 'r') as myzip:
-            savePath = params[2]
-            myzip.extractall(savePath)
-    else:
-        with zipfile.ZipFile(filePath, 'r') as myzip:
+
+    for dir in listdir("./input"):
+        with zipfile.ZipFile("./input" + "/" + dir, 'r') as myzip:
             myzip.extractall(savePath)
 
     unZipAll(savePath)
