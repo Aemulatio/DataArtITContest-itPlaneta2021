@@ -3,7 +3,7 @@ import zipfile
 import gzip
 import sys
 import re
-from os import path, listdir
+from os import listdir
 import shutil
 import hashlib
 
@@ -72,19 +72,20 @@ if __name__ == '__main__':
                             op = s.find("(")
                             if op == 0 and len(s) == 5:  # s[0] == "(":
                                 # print(op)
-                                ss = [x for x in s]
-                                if ss[op + 1] == '1':
-                                    ss[op + 1] = 4
-                                elif ss[op + 1] == '2':
-                                    ss[op + 1] = 8
-                                elif ss[op + 1] == '3':
-                                    ss[op + 2] = 2
-                                s = ''.join(str(sss) for sss in ss)
+                                s = s.replace("101", "401").replace("202", "802").replace("301", "321")
+                                # print(s)
+                                # ss = [x for x in s]
+                                # if ss[op + 1] == '1':
+                                #     ss[op + 1] = 4
+                                # elif ss[op + 1] == '2':
+                                #     ss[op + 1] = 8
+                                # elif ss[op + 1] == '3':
+                                #     ss[op + 2] = 2
+                                # s = ''.join(str(sss) for sss in ss)
                             elif op > 0 and s[op + 4]:
                                 # print(s[op + 3], '3')
                                 # print(s[op + 4], '4')
                                 pass
-
                             numberString += s.replace("(", ' (').replace(")", ") ").replace("-", '')
                     uniqNumbers.add(numberString)
                 f = open("./phones.txt", 'w', encoding='utf-8')
